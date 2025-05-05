@@ -3,10 +3,10 @@ import time
 
 import polars as pl
 import pytest
-from pathlib import Path
 
+from src.config.settings import ZIP_FILE_PATH
 from src.main.data_loader import load_from_zip, parse_date
-from src.config.settings import ZIP_FILE_PATH, CSV_SCHEMA
+
 
 @pytest.fixture
 def mock_zip_file_path(tmp_path):

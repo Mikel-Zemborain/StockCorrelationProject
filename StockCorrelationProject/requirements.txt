@@ -5,3 +5,4 @@ datetime
 pathlib
 pytest
 pytest-mock
+watchdog

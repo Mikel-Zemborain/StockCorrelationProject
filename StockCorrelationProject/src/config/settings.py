@@ -15,6 +15,7 @@ RETURNS_CACHE_PATH = BASE_DIR / "cache" / "returns"
 
 # Required columns for the correlation DataFrame
 CORRELATION_SCHEMA = {'Date': pl.Date,
+                      "Name": pl.String,
                       'Correlation': pl.Float64
                       }
 
@@ -33,5 +34,3 @@ CSV_SCHEMA = {'Ticker': pl.String,
 # Rolling window size for correlation calculation
 ROLLING_WINDOW_SIZE = 20
 
-# Streamlit app settings
-APP_TITLE = "Rolling 20-Day Return Correlation Calculator"

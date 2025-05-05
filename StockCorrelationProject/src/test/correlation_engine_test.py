@@ -63,7 +63,7 @@ def test_get_correlation_from_cache_invalid_schema(mocker, correlation_engine):
     assert result is None
 
 def test_calculate_correlation(correlation_engine):
-    result = correlation_engine.calculate_correlation("AAPL", "MSFT")
+    result = correlation_engine.calculate_correlation("AAPL", "MSFT", "AAPL-MSFT")
     assert isinstance(result, LazyFrame)
     assert set(result.collect().columns) == set(CORRELATION_SCHEMA.keys())
 

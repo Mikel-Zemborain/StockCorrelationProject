@@ -11,7 +11,9 @@ class ReturnEngine:
         self.zip_file_path = zip_file_path
         self.cache_dir = RETURNS_CACHE_PATH
         self.cache_dir.mkdir(parents=True, exist_ok=True)
+        self.ticker_list = None
         self.returns = self.get_returns()
+
 
     def get_returns(self) -> LazyFrame:
         """
@@ -29,6 +31,7 @@ class ReturnEngine:
 
             # If cache does not exist or contains invalid returns, calculate returns
             result_lazy = load_from_zip(self.zip_file_path).pipe(self._calculate_returns)
+            self.ticker_list = result_lazy.select("Ticker").unique().collect().to_series().to_list()
             result = result_lazy.collect().pivot(index="Date", on="Ticker", values="Return")
             result.write_parquet(cache_path)
             return result.lazy()
@@ -37,14 +40,6 @@ class ReturnEngine:
             raise ValueError(f"File not found: {self.zip_file_path}")
         except Exception as e:
             raise RuntimeError(f"error occurred in ReturnEngine: {e}")
-
-
-    def ticker_list(self) -> list[str]:
-        """
-        Returns a list of unique tickers from the loaded data.
-        :return: A list of unique ticker symbols.
-        """
-        return self.returns.select("Ticker").unique().collect().to_series().to_list()
 
     def _calculate_returns(self, lf: LazyFrame) -> LazyFrame:
         """

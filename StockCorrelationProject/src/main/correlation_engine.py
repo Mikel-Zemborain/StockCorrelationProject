@@ -61,7 +61,7 @@ class CorrelationEngine:
             return cached_result
         else:
             # Calculate correlation if not in cache
-            result = self.calculate_correlation(ticker1, ticker2)
+            result = self.calculate_correlation(ticker1, ticker2, correlation_name)
             result.collect().write_parquet(cache_path)
             return result
 
@@ -79,16 +79,21 @@ class CorrelationEngine:
                 return cached_result
         return None
 
-    def calculate_correlation(self, ticker1: str, ticker2: str) -> LazyFrame:
+    def calculate_correlation(self, ticker1: str, ticker2: str, correlation_name: str) -> LazyFrame:
         """
         Calculates the rolling correlation between the two tickers over the specified
         window size and returns the result as a Polars LazyFrame.
         :param ticker1: The first ticker symbol.
         :param ticker2: The second ticker symbol.
+        :param correlation_name: The name of the correlation (e.g., "AAPL-MSFT").
         :return: A Polars LazyFrame containing the rolling correlation for the ticker pair.
         """
+        if ticker1 not in self.returns.columns or ticker2 not in self.returns.columns:
+            raise ValueError(f"One or both tickers ({ticker1}, {ticker2}) are not present in the data.")
+
         return self.returns.with_columns(
-            Correlation=pl.rolling_corr(ticker1, ticker2, window_size = self.window_size)
+            Correlation=pl.rolling_corr(ticker1, ticker2, window_size = self.window_size),
+            Name=pl.lit(correlation_name)
         ).select(CORRELATION_SCHEMA.keys())
 
     def _validate_schema(self, lf: LazyFrame) -> bool:
