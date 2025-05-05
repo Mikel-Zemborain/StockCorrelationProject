@@ -1,0 +1,8 @@
+polars
+streamlit
+matplotlib
+datetime
+pathlib
+zipfile
+os
+pytest
