@@ -10,6 +10,7 @@ class ReturnEngine:
     def __init__(self, zip_file_path: str = ZIP_FILE_PATH):
         self.zip_file_path = zip_file_path
         self.cache_dir = RETURNS_CACHE_PATH
+        self.cache_dir.mkdir(parents=True, exist_ok=True)
         self.returns = self.get_returns()
 
     def get_returns(self) -> LazyFrame:
@@ -27,9 +28,10 @@ class ReturnEngine:
                     return cached_result
 
             # If cache does not exist or contains invalid returns, calculate returns
-            result = load_from_zip(self.zip_file_path).pipe(self._calculate_returns)
-            result.collect().write_parquet(cache_path)
-            return result
+            result_lazy = load_from_zip(self.zip_file_path).pipe(self._calculate_returns)
+            result = result_lazy.collect().pivot(index="Date", on="Ticker", values="Return")
+            result.write_parquet(cache_path)
+            return result.lazy()
 
         except FileNotFoundError:
             raise ValueError(f"File not found: {self.zip_file_path}")
@@ -52,7 +54,7 @@ class ReturnEngine:
         """
         return lf.sort(["Ticker", "Date"]).with_columns(
                 Return = pl.col("Price").pct_change().over("Ticker")
-            ).select(RETURNS_SCHEMA.keys().to_list())
+            ).select(list(RETURNS_SCHEMA.keys()))
 
     def _validate_schema(self, lf: LazyFrame) -> bool:
         """

@@ -1,5 +1,5 @@
 import os
-from zipfile import ZipFile, BadZipFile
+from zipfile import ZipFile, BadZipFile, Path
 
 import polars as pl
 from polars import LazyFrame

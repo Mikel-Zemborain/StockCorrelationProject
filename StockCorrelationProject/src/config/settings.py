@@ -1,20 +1,26 @@
 from pathlib import Path
 import polars as pl
 
+#base directory of the project
+BASE_DIR = Path(__file__).resolve().parents[2]
+
 # Path to the ZIP file containing stock data
-ZIP_FILE_PATH = "data/stock_data.zip"
+ZIP_FILE_PATH = str(BASE_DIR / "data" / "stock_data.zip")
 
 # Cache directory for storing correlation results
-CORRELATION_CACHE_PATH = Path("cache/correlation")
+CORRELATION_CACHE_PATH = BASE_DIR / "cache" / "correlation"
 
 # Cache directory for storing returns results
-RETURNS_CACHE_PATH = Path("cache/returns")
+RETURNS_CACHE_PATH = BASE_DIR / "cache" / "returns"
 
 # Required columns for the correlation DataFrame
-CORRELATION_SCHEMA = {'Date': pl.String,
+CORRELATION_SCHEMA = {'Date': pl.Date,
                       'Correlation': pl.Float64
                       }
-RETURNS_SCHEMA = {'Date': pl.String,
+
+# Required columns for the returns DataFrame
+RETURNS_SCHEMA = {'Date': pl.Date,
+                  'Ticker': pl.String,
                   'Return': pl.Float64
                   }
 
