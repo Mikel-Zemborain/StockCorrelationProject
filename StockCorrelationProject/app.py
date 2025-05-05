@@ -18,9 +18,9 @@ def main(correlation_engine: CorrelationEngine, ticker_list: list[str]):
             plt.plot(group["Date"], group["Correlation"], label=name)
 
         plt.title("Rolling 20-Day Correlation of Selected Tickers", fontsize=20)
-        plt.xlabel("Date", fontsize=30)
-        plt.ylabel("Correlation", fontsize=30)
-        plt.legend(fontsize=30)
+        plt.xlabel("Date", fontsize=20)
+        plt.ylabel("Correlation", fontsize=20)
+        plt.legend(fontsize=10)
         plt.grid()
         st.pyplot(plt)
 
