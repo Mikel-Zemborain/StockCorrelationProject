@@ -13,7 +13,7 @@ def main(correlation_engine: CorrelationEngine, ticker_list: list[str]):
     if calculate and selected_tickers:
         correlations = correlation_engine.get_correlations(set(selected_tickers)).collect()
         # Plot the rolling correlation
-        plt.figure(figsize=(40, 10))  # Increased figure size
+        plt.figure(figsize=(15, 6))  # Increased figure size
         for name, group in correlations.group_by("Name"):
             plt.plot(group["Date"], group["Correlation"], label=name)
 
